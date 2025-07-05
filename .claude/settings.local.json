@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm start)",
+      "Bash(find:*)",
+      "Bash(docker build:*)",
+      "Bash(docker run:*)",
+      "Bash(docker logs:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "WebFetch(domain:help.nuclino.com)"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    "nuclino"
+  ]
+}
