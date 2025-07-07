@@ -28,6 +28,9 @@ app.use(express.json());
 // Map to store transports by session ID
 const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 
+// Map to store API keys by session ID
+const apiKeys: { [sessionId: string]: string } = {};
+
 // Handle POST requests for client-to-server communication
 app.post('/mcp', async (req, res) => {
   // Log incoming headers from MCP client
@@ -45,6 +48,12 @@ app.post('/mcp', async (req, res) => {
   if (sessionId && transports[sessionId]) {
     // Reuse existing transport
     transport = transports[sessionId];
+    
+    // Store API key for existing session
+    const nuclinoApiKey = req.headers['nuclino-api-key'] as string;
+    if (nuclinoApiKey) {
+      apiKeys[sessionId] = nuclinoApiKey;
+    }
   } else if (!sessionId && isInitializeRequest(req.body)) {
     // New initialization request
     transport = new StreamableHTTPServerTransport({
@@ -63,6 +72,7 @@ app.post('/mcp', async (req, res) => {
     transport.onclose = () => {
       if (transport.sessionId) {
         delete transports[transport.sessionId];
+        delete apiKeys[transport.sessionId];
       }
     };
     const server = new McpServer({
@@ -97,6 +107,12 @@ app.post('/mcp', async (req, res) => {
       id: null,
     });
     return;
+  }
+
+  // Store API key for this session BEFORE handling the request
+  const nuclinoApiKey = req.headers['nuclino-api-key'] as string;
+  if (nuclinoApiKey && transport.sessionId) {
+    apiKeys[transport.sessionId] = nuclinoApiKey;
   }
 
   // Handle the request
