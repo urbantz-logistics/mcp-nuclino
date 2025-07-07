@@ -94,6 +94,97 @@ app.post('/mcp', async (req, res) => {
       };
     });
 
+    // Set up search tool
+    server.tool("search", "Search Nuclino for matching content", {
+      query: z.string().describe("The search query to find matching content"),
+      workspaceId: z.string().optional().describe("Filter items that belong to the given workspace"),
+      objectType: z.enum(["item", "collection"]).optional().default("item").describe("Type of object to search for"),
+      after: z.string().optional().describe("Only return items after the given ID for pagination")
+    }, async (args) => {
+      // Get API key from stored session data
+      const apiKey = apiKeys[transport.sessionId || ''];
+      
+      if (!apiKey) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Error: Nuclino API key is required. Please provide it in the 'nuclino-api-key' header."
+            }
+          ]
+        };
+      }
+
+      // Build query parameters
+      const params = new URLSearchParams();
+      params.append('search', args.query);
+      if (args.workspaceId) {
+        params.append('workspaceId', args.workspaceId);
+      }
+      if (args.objectType) {
+        params.append('object', args.objectType);
+      }
+      if (args.after) {
+        params.append('after', args.after);
+      }
+
+      try {
+        const requestHeaders =  {
+          'Authorization': `${apiKey}`,
+          'Content-Type': 'application/json'
+        };
+        
+        logger.info('Making Nuclino API request', {
+          url: `https://api.nuclino.com/v0/items?${params.toString()}`,
+          method: 'GET',
+          sessionId: transport.sessionId
+        });
+        
+        const response = await fetch(`https://api.nuclino.com/v0/items?${params.toString()}`, {
+          method: 'GET',
+          headers: requestHeaders
+        });
+
+        logger.info('Received Nuclino API response', {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          sessionId: transport.sessionId
+        });
+        
+        if (!response.ok) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: Nuclino API request failed with status ${response.status}: ${response.statusText}`
+              }
+            ]
+          };
+        }
+
+        const data = await response.json();
+        
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(data, null, 2)
+            }
+          ]
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: Failed to search Nuclino: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
+      }
+    });
+
     // Connect to the MCP server
     await server.connect(transport);
   } else {
