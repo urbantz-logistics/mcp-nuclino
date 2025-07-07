@@ -10,7 +10,14 @@
       "Bash(docker logs:*)",
       "Bash(docker stop:*)",
       "Bash(docker rm:*)",
-      "WebFetch(domain:help.nuclino.com)"
+      "WebFetch(domain:help.nuclino.com)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "mcp__nuclino__search",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   },
