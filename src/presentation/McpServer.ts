@@ -27,9 +27,9 @@ export class NuclinoMcpServer {
 
 
   private setupSearchTools() {
-    this.server.tool("search_by_team", "Search Nuclino content within a specific team", {
+    this.server.tool("search_by_team", "Search Nuclino content within a specific team. Use this when you don't know which workspace to search in - first get teams with get_teams, then use the first team's ID.", {
       query: z.string().describe("The search query to find matching content"),
-      teamId: z.string().describe("The team ID to search within"),
+      teamId: z.string().describe("The team ID to search within (get this from get_teams first)"),
       after: z.string().optional().describe("Pagination cursor for next page")
     }, async (args) => {
       try {
@@ -54,9 +54,9 @@ export class NuclinoMcpServer {
       }
     });
 
-    this.server.tool("search_by_workspace", "Search Nuclino content within a specific workspace", {
+    this.server.tool("search_by_workspace", "Search Nuclino content within a specific workspace. Use this when you know which workspace to search in - first get workspaces with get_workspaces or find by name with find_workspace_by_name.", {
       query: z.string().describe("The search query to find matching content"),
-      workspaceId: z.string().describe("The workspace ID to search within"),
+      workspaceId: z.string().describe("The workspace ID to search within (get this from get_workspaces or find_workspace_by_name first)"),
       after: z.string().optional().describe("Pagination cursor for next page")
     }, async (args) => {
       try {
@@ -82,8 +82,9 @@ export class NuclinoMcpServer {
     });
   }
 
+
   private setupTeamTools() {
-    this.server.tool("get_teams", "Get all teams", {}, async () => {
+    this.server.tool("get_teams", "Get all teams available to the current user. Use this first to get team IDs for search_by_team. Most users have only one team.", {}, async () => {
       try {
         const teams = await this.teamUseCase.getTeams();
         return {
@@ -106,7 +107,7 @@ export class NuclinoMcpServer {
       }
     });
 
-    this.server.tool("get_workspaces", "Get all workspaces", {}, async () => {
+    this.server.tool("get_workspaces", "Get all workspaces available to the current user. Use this to get workspace IDs for search_by_workspace.", {}, async () => {
       try {
         const workspaces = await this.teamUseCase.getWorkspaces();
         return {
@@ -154,8 +155,8 @@ export class NuclinoMcpServer {
       }
     });
 
-    this.server.tool("find_workspace_by_name", "Find workspace by name", {
-      name: z.string().describe("Workspace name to search for")
+    this.server.tool("find_workspace_by_name", "Find workspace by name. Use this to get workspace ID when you know the workspace name (e.g., 'Engineering', 'Product', 'Marketing').", {
+      name: z.string().describe("Workspace name to search for (partial matches work)")
     }, async (args) => {
       try {
         const workspace = await this.teamUseCase.findWorkspaceByName(args.name);
