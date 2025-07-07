@@ -10,12 +10,18 @@
     "dev": "ts-node --esm src/index.ts",
     "clean": "rm -rf dist"
   },
-  "keywords": ["mcp", "server", "nuclino", "http"],
+  "keywords": [
+    "mcp",
+    "server",
+    "nuclino",
+    "http"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.5",
-    "express": "^5.1"
+    "express": "^5.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
