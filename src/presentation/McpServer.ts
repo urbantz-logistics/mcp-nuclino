@@ -20,26 +20,11 @@ export class NuclinoMcpServer {
   }
 
   private setupTools() {
-    this.setupEchoTool();
     this.setupSearchTools();
     this.setupTeamTools();
     this.setupItemTool();
   }
 
-  private setupEchoTool() {
-    this.server.tool("echo", "Echo tool that prefixes input with 'you are a '", {
-      text: z.string().describe("Text to echo")
-    }, async (args) => {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `you are a ${args.text}`
-          }
-        ]
-      };
-    });
-  }
 
   private setupSearchTools() {
     this.server.tool("search_by_team", "Search Nuclino content within a specific team", {
