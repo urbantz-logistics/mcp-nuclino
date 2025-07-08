@@ -54,7 +54,14 @@ export class NuclinoRepository implements INuclinoRepository {
   async getTeams(): Promise<Team[]> {
     return this.retryHandler.execute(async () => {
       const response = await this.makeRequest('/v0/teams');
-      return response.results.map((team: any) => ({
+      logger.info('Raw teams response', { response });
+      
+      if (!response.data?.results) {
+        logger.error('No results in teams response', { response });
+        throw new Error('Invalid API response format: missing results array');
+      }
+      
+      return response.data.results.map((team: any) => ({
         id: team.id,
         name: team.name,
         description: team.description
@@ -65,7 +72,14 @@ export class NuclinoRepository implements INuclinoRepository {
   async getWorkspaces(): Promise<Workspace[]> {
     return this.retryHandler.execute(async () => {
       const response = await this.makeRequest('/v0/workspaces');
-      return response.results.map((workspace: any) => ({
+      logger.info('Raw workspaces response', { response });
+      
+      if (!response.data?.results) {
+        logger.error('No results in workspaces response', { response });
+        throw new Error('Invalid API response format: missing results array');
+      }
+      console.info(response.data.results);
+      return response.data.results.map((workspace: any) => ({
         id: workspace.id,
         name: workspace.name,
         teamId: workspace.teamId,
@@ -77,25 +91,37 @@ export class NuclinoRepository implements INuclinoRepository {
   async getItem(itemId: string): Promise<Item> {
     return this.retryHandler.execute(async () => {
       const response = await this.makeRequest(`/v0/items/${itemId}`);
+      logger.info('Raw item response', { response });
+
+      if (!response.data) {
+        logger.error('No data in getItem response', { response });
+        throw new Error('Invalid API response format: missing data');
+      }
       return {
-        id: response.id,
-        title: response.title,
-        content: response.content,
-        url: response.url,
-        workspaceId: response.workspaceId,
-        createdAt: response.createdAt,
-        updatedAt: response.updatedAt
+        id: response.data.id,
+        title: response.data.title,
+        content: response.data.content,
+        url: response.data.url,
+        workspaceId: response.data.workspaceId,
+        createdAt: response.data.createdAt,
+        updatedAt: response.data.lastUpdatedAt
       };
+
     }, 'getItem');
   }
 
   private async makeRequest(endpoint: string): Promise<any> {
     // Wait for rate limit slot before making request
     await this.rateLimiter.waitForSlot();
+    logger.info('api key is ' + this.apiKey);
 
     logger.info('Making Nuclino API request', {
       endpoint,
-      rateLimitRequests: this.rateLimiter.getRequestCount()
+      rateLimitRequests: this.rateLimiter.getRequestCount(),
+      headers: {
+        'Authorization': `${this.apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     const response = await fetch(`https://api.nuclino.com${endpoint}`, {
@@ -120,12 +146,16 @@ export class NuclinoRepository implements INuclinoRepository {
   }
 
   private parseSearchResponse(response: any): SearchResponse {
+    if (!response.data?.results) {
+      logger.error('No results in search response', { response });
+      throw new Error('Invalid API response format: missing results array');
+    }
+    
     return {
-      results: response.results.map((item: any) => ({
+      results: response.data.results.map((item: any) => ({
         id: item.id,
         title: item.title,
         url: item.url,
-        excerpt: item.excerpt
       })),
       hasMore: response.hasMore || false,
       nextCursor: response.nextCursor
