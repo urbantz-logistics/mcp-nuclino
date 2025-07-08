@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:stdio": "TRANSPORT_TYPE=stdio node dist/index.js",
     "dev": "ts-node --esm src/index.ts",
+    "dev:stdio": "TRANSPORT_TYPE=stdio ts-node --esm src/index.ts",
     "clean": "rm -rf dist"
   },
   "keywords": [

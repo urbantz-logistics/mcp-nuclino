@@ -27,7 +27,7 @@ export class NuclinoMcpServer {
 
 
   private setupSearchTools() {
-    this.server.tool("search_by_team", "Search Nuclino content within a specific team. Use this when you don't know which workspace to search in - first get teams with get_teams, then use the first team's ID.", {
+    this.server.tool("search_by_team", "Search Nuclino content within a specific team. Use this when you don't know which workspace to search in - first get teams with get_teams, then use the first team's ID. Of course, if you have notion of which team to search in, you can see if there's a match there.", {
       query: z.string().describe("The search query to find matching content"),
       teamId: z.string().describe("The team ID to search within (get this from get_teams first)"),
       after: z.string().optional().describe("Pagination cursor for next page")

@@ -6,7 +6,14 @@
 			"type": "http",
 			"headers": {
 				"nuclino-api-key": "your-api-key-here"
+            }
+        },
+        "nuclino-stdio": {
+			"_description": "Nuclino MCP server - stdio transport for local integration",
+			"command": "/path/to/your/nuclino-mcp/run-stdio.sh",
+			"env": {
+				"NUCLINO_API_KEY": "your-api-key-here"
 			}
-		}
+		},
 	}
 }

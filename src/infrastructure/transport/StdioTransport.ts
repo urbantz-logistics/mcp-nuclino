@@ -1,0 +1,61 @@
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { ITransport, TransportConfig } from "./ITransport.js";
+import { logger } from "../http/Logger.js";
+import { NuclinoRepository } from "../nuclino/NuclinoRepository.js";
+import { SearchUseCase } from "../../application/usecases/SearchUseCase.js";
+import { TeamUseCase } from "../../application/usecases/TeamUseCase.js";
+import { ItemUseCase } from "../../application/usecases/ItemUseCase.js";
+import { NuclinoMcpServer } from "../../presentation/McpServer.js";
+
+export class StdioTransport implements ITransport {
+  private transport?: StdioServerTransport;
+  private server?: McpServer;
+
+  constructor(private config: TransportConfig) {
+    if (!config.apiKey) {
+      throw new Error('API key is required for stdio transport');
+    }
+  }
+
+  async start(): Promise<void> {
+    logger.info('Starting Nuclino MCP stdio server');
+    
+    // Create server
+    this.server = this.createMcpServer(this.config.apiKey!);
+    
+    // Create stdio transport
+    this.transport = new StdioServerTransport();
+    
+    // Connect server to transport
+    await this.server.connect(this.transport);
+    
+    logger.info('Nuclino MCP stdio server started');
+  }
+
+  async stop(): Promise<void> {
+    if (this.transport) {
+      await this.transport.close();
+      logger.info('Stdio server stopped');
+    }
+  }
+
+  async connectServer(server: McpServer): Promise<void> {
+    if (!this.transport) {
+      throw new Error('Transport not initialized');
+    }
+    await server.connect(this.transport);
+  }
+
+  private createMcpServer(apiKey: string): McpServer {
+    // Create dependencies using Clean Architecture
+    const nuclinoRepository = new NuclinoRepository(apiKey);
+    const searchUseCase = new SearchUseCase(nuclinoRepository);
+    const teamUseCase = new TeamUseCase(nuclinoRepository);
+    const itemUseCase = new ItemUseCase(nuclinoRepository);
+
+    // Create MCP server with dependencies
+    const nuclinoMcpServer = new NuclinoMcpServer(searchUseCase, teamUseCase, itemUseCase);
+    return nuclinoMcpServer.getServer();
+  }
+}

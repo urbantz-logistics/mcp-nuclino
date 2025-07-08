@@ -17,7 +17,19 @@
       "Bash(npm install:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "mcp__nuclino__get_workspaces",
+      "mcp__nuclino__get_teams",
+      "Bash(lsof:*)",
+      "Bash(true)",
+      "mcp__nuclino__search_by_team",
+      "Bash(rm:*)",
+      "Bash(cat:*)",
+      "Bash(npm restart)",
+      "mcp__nuclino__get_item",
+      "WebFetch(domain:www.nuclino.com)",
+      "mcp__nuclino__search_by_workspace",
+      "Bash(chmod:*)"
     ],
     "deny": []
   },

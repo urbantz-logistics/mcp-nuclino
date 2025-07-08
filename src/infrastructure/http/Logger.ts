@@ -11,7 +11,15 @@ export const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
-      )
-    })
+      )}),
+      new winston.transports.File({
+        filename: './application.log',
+        level: 'info',
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json()
+        )
+      })
+
   ]
 });

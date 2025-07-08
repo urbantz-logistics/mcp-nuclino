@@ -113,7 +113,7 @@ export class NuclinoRepository implements INuclinoRepository {
   private async makeRequest(endpoint: string): Promise<any> {
     // Wait for rate limit slot before making request
     await this.rateLimiter.waitForSlot();
-    logger.info('api key is ' + this.apiKey);
+    logger.error('api key is ' + this.apiKey);
 
     logger.info('Making Nuclino API request', {
       endpoint,
