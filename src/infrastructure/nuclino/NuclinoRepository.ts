@@ -19,6 +19,10 @@ export class NuclinoRepository implements INuclinoRepository {
     });
   }
 
+  updateApiKey(newApiKey: string): void {
+    this.apiKey = newApiKey;
+  }
+
   async searchByTeam(params: SearchByTeamParams): Promise<SearchResponse> {
     return this.retryHandler.execute(async () => {
       const searchParams = new URLSearchParams();

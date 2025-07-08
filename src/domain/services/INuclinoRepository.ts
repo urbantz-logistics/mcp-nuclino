@@ -19,4 +19,5 @@ export interface INuclinoRepository {
   getTeams(): Promise<Team[]>;
   getWorkspaces(): Promise<Workspace[]>;
   getItem(itemId: string): Promise<Item>;
+  updateApiKey(newApiKey: string): void;
 }

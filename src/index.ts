@@ -18,6 +18,9 @@ const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 // Map to store API keys by session ID
 const apiKeys: { [sessionId: string]: string } = {};
 
+// Map to store repositories by session ID
+const repositories: { [sessionId: string]: NuclinoRepository } = {};
+
 // Handle POST requests for client-to-server communication
 app.post('/mcp', async (req, res) => {
   // Log incoming headers from MCP client
@@ -36,10 +39,14 @@ app.post('/mcp', async (req, res) => {
     // Reuse existing transport
     transport = transports[sessionId];
     
-    // Store API key for existing session
+    // Update API key for existing session
     const nuclinoApiKey = req.headers['nuclino-api-key'] as string;
     if (nuclinoApiKey) {
       apiKeys[sessionId] = nuclinoApiKey;
+      // Update the repository with the new API key
+      if (repositories[sessionId]) {
+        repositories[sessionId].updateApiKey(nuclinoApiKey);
+      }
     }
   } else if (!sessionId && isInitializeRequest(req.body)) {
     // New initialization request
@@ -60,6 +67,7 @@ app.post('/mcp', async (req, res) => {
       if (transport.sessionId) {
         delete transports[transport.sessionId];
         delete apiKeys[transport.sessionId];
+        delete repositories[transport.sessionId];
       }
     };
 
@@ -89,6 +97,11 @@ app.post('/mcp', async (req, res) => {
 
     // Connect to the MCP server
     await server.connect(transport);
+
+    // Store repository for this session
+    if (transport.sessionId) {
+      repositories[transport.sessionId] = nuclinoRepository;
+    }
   } else {
     // Invalid request
     res.status(400).json({
@@ -102,11 +115,6 @@ app.post('/mcp', async (req, res) => {
     return;
   }
 
-  // Store API key for this session BEFORE handling the request
-  const nuclinoApiKey = req.headers['nuclino-api-key'] as string;
-  if (nuclinoApiKey && transport.sessionId) {
-    apiKeys[transport.sessionId] = nuclinoApiKey;
-  }
 
   // Handle the request
   await transport.handleRequest(req, res, req.body);
