@@ -18,6 +18,7 @@ export class NuclinoMcpServer {
   private setupTools() {
     this.setupSearchTools();
     this.setupTeamTools();
+    this.setupUserTools();
     this.setupItemTool();
   }
 
@@ -163,6 +164,87 @@ export class NuclinoMcpServer {
             {
               type: "text",
               text: workspace ? JSON.stringify(workspace, null, 2) : "Workspace not found"
+            }
+          ]
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
+      }
+    });
+  }
+
+  private setupUserTools() {
+    this.server.tool("get_users", "Get all users available in the current team. Use this to get user information and find users by name.", {}, async () => {
+      try {
+        const users = await this.nuclinoRepository.getUsers();
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(users, null, 2)
+            }
+          ]
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
+      }
+    });
+
+    this.server.tool("get_user", "Get a specific user by ID", {
+      userId: z.string().describe("The user ID to retrieve")
+    }, async (args) => {
+      try {
+        const user = await this.nuclinoRepository.getUser(args.userId);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(user, null, 2)
+            }
+          ]
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
+      }
+    });
+
+    this.server.tool("find_user_by_name", "Find user by name (first name, last name, or email). Use this to find users when you know their name.", {
+      name: z.string().describe("User name to search for (searches first name, last name, and email)")
+    }, async (args) => {
+      try {
+        const users = await this.nuclinoRepository.getUsers();
+        const searchTerm = args.name.toLowerCase();
+        const matchingUsers = users.filter(user => 
+          user.firstName.toLowerCase().includes(searchTerm) ||
+          user.lastName.toLowerCase().includes(searchTerm) ||
+          user.email.toLowerCase().includes(searchTerm)
+        );
+        return {
+          content: [
+            {
+              type: "text",
+              text: matchingUsers.length > 0 ? JSON.stringify(matchingUsers, null, 2) : "No users found"
             }
           ]
         };

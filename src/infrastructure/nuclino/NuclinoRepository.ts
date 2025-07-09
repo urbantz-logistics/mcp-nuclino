@@ -1,5 +1,5 @@
 import { INuclinoRepository, SearchByTeamParams, SearchByWorkspaceParams } from '../../domain/services/INuclinoRepository.js';
-import { Team, Workspace, Item } from '../../domain/entities/Team.js';
+import { Team, Workspace, Item, User } from '../../domain/entities/Team.js';
 import { SearchResponse } from '../../domain/entities/SearchResult.js';
 import { RateLimiter } from './RateLimiter.js';
 import { RetryHandler } from './RetryHandler.js';
@@ -100,6 +100,45 @@ export class NuclinoRepository implements INuclinoRepository {
       };
 
     }, 'getItem');
+  }
+
+  async getUsers(): Promise<User[]> {
+    return this.retryHandler.execute(async () => {
+      const response = await this.makeRequest('/v0/users');
+      logger.info('Raw users response', { response });
+      
+      if (!response.data?.results) {
+        logger.error('No results in users response', { response });
+        throw new Error('Invalid API response format: missing results array');
+      }
+      
+      return response.data.results.map((user: any) => ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatarUrl: user.avatarUrl
+      }));
+    }, 'getUsers');
+  }
+
+  async getUser(userId: string): Promise<User> {
+    return this.retryHandler.execute(async () => {
+      const response = await this.makeRequest(`/v0/users/${userId}`);
+      logger.info('Raw user response', { response });
+
+      if (!response.data) {
+        logger.error('No data in getUser response', { response });
+        throw new Error('Invalid API response format: missing data');
+      }
+      return {
+        id: response.data.id,
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        email: response.data.email,
+        avatarUrl: response.data.avatarUrl
+      };
+    }, 'getUser');
   }
 
   private async makeRequest(endpoint: string): Promise<any> {

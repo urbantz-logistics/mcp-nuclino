@@ -49,6 +49,9 @@ The transport layer is abstracted to support multiple transport types:
 - `get_workspaces`: Get all available workspaces
 - `find_team_by_name`: Find a team by name
 - `find_workspace_by_name`: Find a workspace by name
+- `get_users`: Get all available users
+- `get_user`: Get a specific user by ID
+- `find_user_by_name`: Find a user by name (first name, last name, or email)
 - `get_item`: Get a specific item by ID
 
 ## Configuration
