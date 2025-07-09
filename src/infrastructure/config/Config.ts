@@ -1,5 +1,5 @@
 import { TransportConfig, TransportType } from "../transport/ITransport.js";
-import { logger } from "../http/Logger.js";
+import { contextLogger as logger } from "../http/Logger.js";
 
 export class Config {
   static getTransportConfig(): TransportConfig {

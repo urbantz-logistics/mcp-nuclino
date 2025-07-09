@@ -2,7 +2,7 @@ import { ServerManager } from "./application/services/ServerManager.js";
 import { Config } from "./infrastructure/config/Config.js";
 import { HttpTransport } from "./infrastructure/transport/HttpTransport.js";
 import { StdioTransport } from "./infrastructure/transport/StdioTransport.js";
-import { logger } from "./infrastructure/http/Logger.js";
+import { contextLogger as logger } from "./infrastructure/http/Logger.js";
 
 async function main() {
   try {

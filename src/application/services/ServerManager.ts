@@ -1,5 +1,5 @@
 import { ITransport } from "../../infrastructure/transport/ITransport.js";
-import { logger } from "../../infrastructure/http/Logger.js";
+import { contextLogger as logger } from "../../infrastructure/http/Logger.js";
 
 export class ServerManager {
   constructor(private transport: ITransport) {}

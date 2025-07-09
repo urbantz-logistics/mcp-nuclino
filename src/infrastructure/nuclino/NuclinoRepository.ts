@@ -3,7 +3,7 @@ import { Team, Workspace, Item } from '../../domain/entities/Team.js';
 import { SearchResponse } from '../../domain/entities/SearchResult.js';
 import { RateLimiter } from './RateLimiter.js';
 import { RetryHandler } from './RetryHandler.js';
-import { logger } from '../http/Logger.js';
+import { contextLogger as logger } from '../http/Logger.js';
 
 export class NuclinoRepository implements INuclinoRepository {
   constructor(

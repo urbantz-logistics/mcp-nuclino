@@ -1,4 +1,4 @@
-import { logger } from '../http/Logger.js';
+import { contextLogger as logger } from '../http/Logger.js';
 
 export interface RetryConfig {
   maxRetries: number;

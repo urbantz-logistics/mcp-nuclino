@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ITransport, TransportConfig } from "./ITransport.js";
-import { logger } from "../http/Logger.js";
+import { stdioLogger as logger } from "../http/Logger.js";
 import { NuclinoRepository } from "../nuclino/NuclinoRepository.js";
 import { RateLimiter } from "../nuclino/RateLimiter.js";
 import { RetryHandler } from "../nuclino/RetryHandler.js";
