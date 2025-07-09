@@ -39,9 +39,7 @@ npm install
 
 - `TRANSPORT_TYPE`: Set to 'http' (default) or 'stdio'
 - `PORT`: Port for HTTP transport (default: 3000)
-- `NUCLINO_API_KEY`: Required for stdio transport
-
-## Usage
+- `NUCLINO_API_KEY`: Required for stdio transport only
 
 ### HTTP Transport
 
@@ -73,6 +71,11 @@ The server will communicate via stdin/stdout, making it suitable for direct inte
 ## API Key
 
 You need a Nuclino API key to use this server. You can create one in your Nuclino [profile page]([url](https://app.nuclino.com/users/me)).
+
+
+## Usage
+You will find an .mcp.json.example file in this repository to show how you can configure both versions of the MCP. 
+Once installed, you can use the MCP to summarize all info it can find on Nuclino about certain topics. You can stear it by passing a workspace name to limit the search scope.
 
 ## Available Tools
 
