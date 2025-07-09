@@ -6,18 +6,11 @@ import { RetryHandler } from './RetryHandler.js';
 import { logger } from '../http/Logger.js';
 
 export class NuclinoRepository implements INuclinoRepository {
-  private rateLimiter: RateLimiter;
-  private retryHandler: RetryHandler;
-
-  constructor(private apiKey: string) {
-    this.rateLimiter = new RateLimiter(150, 1); // 150 requests per minute
-    this.retryHandler = new RetryHandler({
-      maxRetries: 3,
-      baseDelay: 1000,
-      maxDelay: 30000,
-      backoffFactor: 2
-    });
-  }
+  constructor(
+    private apiKey: string,
+    private rateLimiter: RateLimiter,
+    private retryHandler: RetryHandler
+  ) {}
 
   updateApiKey(newApiKey: string): void {
     this.apiKey = newApiKey;

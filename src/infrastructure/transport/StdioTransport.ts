@@ -3,6 +3,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { ITransport, TransportConfig } from "./ITransport.js";
 import { logger } from "../http/Logger.js";
 import { NuclinoRepository } from "../nuclino/NuclinoRepository.js";
+import { RateLimiter } from "../nuclino/RateLimiter.js";
+import { RetryHandler } from "../nuclino/RetryHandler.js";
 import { SearchUseCase } from "../../application/usecases/SearchUseCase.js";
 import { TeamUseCase } from "../../application/usecases/TeamUseCase.js";
 import { ItemUseCase } from "../../application/usecases/ItemUseCase.js";
@@ -49,7 +51,14 @@ export class StdioTransport implements ITransport {
 
   private createMcpServer(apiKey: string): McpServer {
     // Create dependencies using Clean Architecture
-    const nuclinoRepository = new NuclinoRepository(apiKey);
+    const rateLimiter = new RateLimiter(150, 1); // 150 requests per minute
+    const retryHandler = new RetryHandler({
+      maxRetries: 3,
+      baseDelay: 1000,
+      maxDelay: 30000,
+      backoffFactor: 2
+    });
+    const nuclinoRepository = new NuclinoRepository(apiKey, rateLimiter, retryHandler);
     const searchUseCase = new SearchUseCase(nuclinoRepository);
     const teamUseCase = new TeamUseCase(nuclinoRepository);
     const itemUseCase = new ItemUseCase(nuclinoRepository);
