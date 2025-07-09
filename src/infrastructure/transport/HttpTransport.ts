@@ -8,9 +8,6 @@ import { logger } from "../http/Logger.js";
 import { NuclinoRepository } from "../nuclino/NuclinoRepository.js";
 import { RateLimiter } from "../nuclino/RateLimiter.js";
 import { RetryHandler } from "../nuclino/RetryHandler.js";
-import { SearchUseCase } from "../../application/usecases/SearchUseCase.js";
-import { TeamUseCase } from "../../application/usecases/TeamUseCase.js";
-import { ItemUseCase } from "../../application/usecases/ItemUseCase.js";
 import { NuclinoMcpServer } from "../../presentation/McpServer.js";
 
 export class HttpTransport implements ITransport {
@@ -151,12 +148,9 @@ export class HttpTransport implements ITransport {
       backoffFactor: 2
     });
     const nuclinoRepository = new NuclinoRepository(apiKey, rateLimiter, retryHandler);
-    const searchUseCase = new SearchUseCase(nuclinoRepository);
-    const teamUseCase = new TeamUseCase(nuclinoRepository);
-    const itemUseCase = new ItemUseCase(nuclinoRepository);
 
     // Create MCP server with dependencies
-    const nuclinoMcpServer = new NuclinoMcpServer(searchUseCase, teamUseCase, itemUseCase);
+    const nuclinoMcpServer = new NuclinoMcpServer(nuclinoRepository);
     return nuclinoMcpServer.getServer();
   }
 

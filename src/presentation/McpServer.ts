@@ -1,16 +1,12 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { SearchUseCase } from '../application/usecases/SearchUseCase.js';
-import { TeamUseCase } from '../application/usecases/TeamUseCase.js';
-import { ItemUseCase } from '../application/usecases/ItemUseCase.js';
+import { INuclinoRepository } from '../domain/services/INuclinoRepository.js';
 
 export class NuclinoMcpServer {
   private server: McpServer;
 
   constructor(
-    private searchUseCase: SearchUseCase,
-    private teamUseCase: TeamUseCase,
-    private itemUseCase: ItemUseCase
+    private nuclinoRepository: INuclinoRepository
   ) {
     this.server = new McpServer({
       name: "nuclino-server",
@@ -33,7 +29,7 @@ export class NuclinoMcpServer {
       after: z.string().optional().describe("Pagination cursor for next page")
     }, async (args) => {
       try {
-        const result = await this.searchUseCase.searchByTeam(args);
+        const result = await this.nuclinoRepository.searchByTeam(args);
         return {
           content: [
             {
@@ -60,7 +56,7 @@ export class NuclinoMcpServer {
       after: z.string().optional().describe("Pagination cursor for next page")
     }, async (args) => {
       try {
-        const result = await this.searchUseCase.searchByWorkspace(args);
+        const result = await this.nuclinoRepository.searchByWorkspace(args);
         return {
           content: [
             {
@@ -86,7 +82,7 @@ export class NuclinoMcpServer {
   private setupTeamTools() {
     this.server.tool("get_teams", "Get all teams available to the current user. Use this first to get team IDs for search_by_team. Most users have only one team.", {}, async () => {
       try {
-        const teams = await this.teamUseCase.getTeams();
+        const teams = await this.nuclinoRepository.getTeams();
         return {
           content: [
             {
@@ -109,7 +105,7 @@ export class NuclinoMcpServer {
 
     this.server.tool("get_workspaces", "Get all workspaces available to the current user. Use this to get workspace IDs for search_by_workspace.", {}, async () => {
       try {
-        const workspaces = await this.teamUseCase.getWorkspaces();
+        const workspaces = await this.nuclinoRepository.getWorkspaces();
         return {
           content: [
             {
@@ -134,7 +130,8 @@ export class NuclinoMcpServer {
       name: z.string().describe("Team name to search for")
     }, async (args) => {
       try {
-        const team = await this.teamUseCase.findTeamByName(args.name);
+        const teams = await this.nuclinoRepository.getTeams();
+        const team = teams.find(team => team.name.toLowerCase().includes(args.name.toLowerCase()));
         return {
           content: [
             {
@@ -159,7 +156,8 @@ export class NuclinoMcpServer {
       name: z.string().describe("Workspace name to search for (partial matches work)")
     }, async (args) => {
       try {
-        const workspace = await this.teamUseCase.findWorkspaceByName(args.name);
+        const workspaces = await this.nuclinoRepository.getWorkspaces();
+        const workspace = workspaces.find(workspace => workspace.name.toLowerCase().includes(args.name.toLowerCase()));
         return {
           content: [
             {
@@ -186,7 +184,7 @@ export class NuclinoMcpServer {
       itemId: z.string().describe("The item ID to retrieve")
     }, async (args) => {
       try {
-        const item = await this.itemUseCase.getItem(args.itemId);
+        const item = await this.nuclinoRepository.getItem(args.itemId);
         return {
           content: [
             {
