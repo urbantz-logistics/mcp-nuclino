@@ -1,4 +1,5 @@
 import { TransportConfig, TransportType } from "../transport/ITransport.js";
+import { logger } from "../http/Logger.js";
 
 export class Config {
   static getTransportConfig(): TransportConfig {
@@ -7,7 +8,7 @@ export class Config {
     const apiKey = process.env.NUCLINO_API_KEY;
 
     // Debug logging
-    console.log('Config debug:', {
+    logger.info('Config debug:', {
       transportType,
       hasApiKey: !!apiKey
     });
