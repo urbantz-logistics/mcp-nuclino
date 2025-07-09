@@ -29,7 +29,6 @@ export class HttpTransport implements ITransport {
     this.app.post('/mcp', async (req, res) => {
       // Log incoming headers from MCP client
       logger.info('Received MCP request', {
-        headers: req.headers,
         sessionId: req.headers['mcp-session-id'],
         nuclinoApiKey: req.headers['nuclino-api-key'] ? '[REDACTED]' : undefined,
         userAgent: req.headers['user-agent']

@@ -9,9 +9,7 @@ export class Config {
     // Debug logging
     console.log('Config debug:', {
       transportType,
-      hasApiKey: !!apiKey,
-      apiKeyLength: apiKey?.length,
-      env: Object.keys(process.env).filter(k => k.includes('NUCLINO'))
+      hasApiKey: !!apiKey
     });
 
     // Validate transport type

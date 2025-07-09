@@ -78,7 +78,6 @@ export class NuclinoRepository implements INuclinoRepository {
         logger.error('No results in workspaces response', { response });
         throw new Error('Invalid API response format: missing results array');
       }
-      console.info(response.data.results);
       return response.data.results.map((workspace: any) => ({
         id: workspace.id,
         name: workspace.name,
@@ -113,13 +112,12 @@ export class NuclinoRepository implements INuclinoRepository {
   private async makeRequest(endpoint: string): Promise<any> {
     // Wait for rate limit slot before making request
     await this.rateLimiter.waitForSlot();
-    logger.error('api key is ' + this.apiKey);
 
     logger.info('Making Nuclino API request', {
       endpoint,
       rateLimitRequests: this.rateLimiter.getRequestCount(),
       headers: {
-        'Authorization': `${this.apiKey}`,
+        'Authorization': '[REDACTED]',
         'Content-Type': 'application/json'
       }
     });
