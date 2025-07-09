@@ -1,15 +1,13 @@
-import { ITransport, TransportConfig } from "../../infrastructure/transport/ITransport.js";
-import { TransportFactory } from "../../infrastructure/transport/TransportFactory.js";
+import { ITransport } from "../../infrastructure/transport/ITransport.js";
 import { logger } from "../../infrastructure/http/Logger.js";
 
 export class ServerManager {
-  private transport?: ITransport;
+  constructor(private transport: ITransport) {}
 
-  async start(config: TransportConfig): Promise<void> {
+  async start(): Promise<void> {
     try {
-      this.transport = TransportFactory.create(config);
       await this.transport.start();
-      logger.info(`Server started successfully with ${config.type} transport`);
+      logger.info('Server started successfully');
     } catch (error) {
       logger.error('Failed to start server', error);
       throw error;
@@ -17,14 +15,12 @@ export class ServerManager {
   }
 
   async stop(): Promise<void> {
-    if (this.transport) {
-      try {
-        await this.transport.stop();
-        logger.info('Server stopped successfully');
-      } catch (error) {
-        logger.error('Error stopping server', error);
-        throw error;
-      }
+    try {
+      await this.transport.stop();
+      logger.info('Server stopped successfully');
+    } catch (error) {
+      logger.error('Error stopping server', error);
+      throw error;
     }
   }
 
