@@ -72,7 +72,7 @@ The server will communicate via stdin/stdout, making it suitable for direct inte
 
 ## API Key
 
-You need a Nuclino API key to use this server. You can obtain one from your Nuclino workspace settings.
+You need a Nuclino API key to use this server. You can create one in your Nuclino [profile page]([url](https://app.nuclino.com/users/me)).
 
 ## Available Tools
 
