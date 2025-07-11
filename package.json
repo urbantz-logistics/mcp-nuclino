@@ -21,7 +21,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.5",
+    "@modelcontextprotocol/sdk": "^1.15",
     "express": "^5.1",
     "winston": "^3.17.0"
   },
