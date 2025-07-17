@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { ServerManager } from "./application/services/ServerManager.js";
 import { Config } from "./infrastructure/config/Config.js";
 import { HttpTransport } from "./infrastructure/transport/HttpTransport.js";

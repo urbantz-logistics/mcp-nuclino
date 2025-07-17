@@ -1,19 +1,20 @@
 {
-  "name": "nuclino-mcp-server",
-  "version": "1.0.0",
-  "description": "Streamable HTTP MCP server for Nuclino integration",
+  "name": "@marijnnn/mcp-nuclino",
+  "version": "0.8.0",
+  "description": "MCP server for Nuclino integration",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "prepare": "npm run build",
+    "start": "TRANSPORT_TYPE=http node dist/index.js",
     "start:stdio": "TRANSPORT_TYPE=stdio node dist/index.js",
-    "dev": "ts-node --esm src/index.ts",
+    "dev": "TRANSPORT_TYPE=http  ts-node --esm src/index.ts",
     "dev:stdio": "TRANSPORT_TYPE=stdio ts-node --esm src/index.ts",
     "clean": "rm -rf dist"
   },
   "keywords": [
-    "mcp",
+    "mcp", "model-context-protocol",
     "server",
     "nuclino",
     "http"
@@ -30,5 +31,15 @@
     "@types/node": "^24.0.13",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
+  },
+  "bin": {
+    "mcp-nuclino": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

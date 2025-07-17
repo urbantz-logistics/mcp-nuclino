@@ -50,7 +50,7 @@ const createLogger = (useStderr: boolean = false) => {
 export const logger = createLogger(false);
 
 // Logger for stdio transport (uses stderr)
-export const stdioLogger = createLogger(true);
+export const stdioLogger = createLogger(false);
 
 // Context-aware logger that detects transport type from environment
 export const contextLogger = process.env.TRANSPORT_TYPE === 'stdio' ? stdioLogger : logger;
