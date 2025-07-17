@@ -57,7 +57,7 @@ The transport layer is abstracted to support multiple transport types:
 ## Configuration
 
 Set these environment variables:
-- `TRANSPORT_TYPE`: 'http' or 'stdio' (default: 'http')
+- `TRANSPORT_TYPE`: 'http' or 'stdio' (default: 'stdio')
 - `PORT`: Port for HTTP transport (default: 3000)
 - `NUCLINO_API_KEY`: Required for stdio transport
 

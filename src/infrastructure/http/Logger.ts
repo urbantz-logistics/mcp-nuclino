@@ -37,7 +37,7 @@ const createLogger = (useStderr: boolean = false) => {
   }
 
   return winston.createLogger({
-    level: 'info',
+    level: 'error',
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.json()
@@ -50,7 +50,7 @@ const createLogger = (useStderr: boolean = false) => {
 export const logger = createLogger(false);
 
 // Logger for stdio transport (uses stderr)
-export const stdioLogger = createLogger(false);
+export const stdioLogger = createLogger(true);
 
 // Context-aware logger that detects transport type from environment
 export const contextLogger = process.env.TRANSPORT_TYPE === 'stdio' ? stdioLogger : logger;

@@ -3,7 +3,7 @@ import { contextLogger as logger } from "../http/Logger.js";
 
 export class Config {
   static getTransportConfig(): TransportConfig {
-    const transportType = (process.env.TRANSPORT_TYPE || 'http') as TransportType;
+    const transportType = (process.env.TRANSPORT_TYPE || 'stdio') as TransportType;
     const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
     const apiKey = process.env.NUCLINO_API_KEY;
 

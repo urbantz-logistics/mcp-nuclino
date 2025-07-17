@@ -1,6 +1,6 @@
 {
   "name": "@marijnnn/mcp-nuclino",
-  "version": "0.8.0",
+  "version": "0.8.5",
   "description": "MCP server for Nuclino integration",
   "main": "dist/index.js",
   "type": "module",
